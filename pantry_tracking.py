@@ -12,31 +12,60 @@ removed_products_file = os.path.join(current_directory, "removed_products.csv")
 menstrual_file = os.path.join(current_directory, "menstrual_products.csv")
 donated_file = os.path.join(current_directory, "donated_products.csv")  
 spoiled_file = os.path.join(current_directory, "spoiled_food.csv")  
-planB_csv = os.path.join(current_directory, "planB_data.csv")
+inventory_file = os.path.join(current_directory, "basement_inventory.csv")
 PASSWORD = "pantry"
 
 
 # Define categories and their corresponding items
 categories = {
-    "Produce": ["Apples", "Bananas", "Oranges", "Persimmons",
-                "Tomatoes", "Potatoes", "Eggplants", "Onions",
-                "Zucchinis", "Carrots", "Beets", "Turnips", "Lettuce"],
-    "Meat": ["Chicken", "Beef", "Eggs", "Fish (General)"],
-    "Dairy": ["Milk", "Cheese", "Yogurt"],
-    "Canned/Jarred Foods": ["Tomato Sauce", "Canned Beans", "Jam"],
-    "Dry/Baking Goods": ["Flour", "Sugar", "Pasta", "Rice", "Baking Soda"],
-    "Personal Care": ["Condoms", "Pads", "Tampons", "Menstrual Cups",
-                      "Floss", "Plan B", "Sunscreen", "Lotion"]
+    "Fruit": ["Apples", "Avocados", "Bananas", "Berries", "Cherries", "Citrus Fruits",
+              "Grapes", "Kiwis", "Mangoes", "Melons", "Oranges", "Papayas",
+              "Peaches", "Pears", "Pineapple", "Plums"
+              ],
+    "Vegetables": ["Asparagus", "Beets", "Bell Peppers", "Broccoli", "Brussels Sprouts",
+                   "Cabbage", "Carrots", "Cauliflower", "Celery", "Corn", "Cucumbers",
+                   "Eggplants", "Garlic", "Green Beans", "Kale", "Lettuce", "Mushrooms",
+                   "Onions", "Peas", "Potatoes", "Radishes", "Spinach", "Sweet Potatoes",
+                   "Tomatoes", "Turnips", "Zucchinis"
+                   ], 
+    "Protein": ["Beef", "Chicken", "Eggs", "Fish (General)", "Pork" "Tofu"
+                ],
+    "Dairy": [
+        "Butter", "Cheese", "Cream", "Milk", "Yogurt"
+    ],
+
+    "Canned/Jarred Foods": [
+        "Beverage", "Canned Beans", "Canned Fruit", "Canned Soup", "Canned Tuna",
+        "Canned Vegetables", "Condiments", "Jam", "Peanut Butter",
+        "Pickles", "Sauce", "Syrup"
+    ],
+
+    "Snacks": [
+       "Candy", "Chips", "Cookies", "Crackers", "Granola Bars", "Popcorn", "Dried Fruit", "Nuts"
+    ],
+    "Grains/Baking Goods": [
+        "Baking Soda", "Bread", "Cereal", "Flour",
+        "Pasta", "Rice", "Sugar", "Tortillas"
+    ],
+
+    "Personal Care": [
+        "Conditioner", "Condoms", "Deodorant", "Diapers", "Floss",
+        "Lip Balm", "Lotion", "Menstrual Cups", "Pads", "Plan B",
+        "Razors", "Shampoo", "Shaving Cream", "Soap",
+        "Tampons", "Toothbrushes", "Toothpaste", "Sunscreen"
+    ]
 }
 
 # Empty categories in session state for other category
 if 'categories' not in st.session_state:
     st.session_state.categories = {
-        "Produce": [],
-        "Meat": [],
+        "Fruit": [],
+        "Vegetables": [],
+        "Protein": [],
         "Dairy": [],
         "Canned/Jarred Foods": [],
-        "Dry/Baking Goods": [],
+        "Snacks": [],
+        "Grains/Baking Goods": [],
         "Personal Care": []
     }
 
@@ -84,7 +113,6 @@ st.markdown(
     }
 
 
-    
 
     /* Ensure background does not override the text color */
     .stApp {
@@ -95,6 +123,16 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+##CSS styling for expander
+st.markdown("""
+<style>
+div[data-testid="stExpander"] > details > summary {
+    background-color: #222;
+    color: white;
+}
+</style>
+""", unsafe_allow_html=True)
+
 
 st.markdown(background_image_css, unsafe_allow_html=True)
 
@@ -103,9 +141,9 @@ st.title("Pantry Tracking Dashboard")
 
 
 # Tabs
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "Products Distributed", "Walk In Menu", "Track Donated Products"
-    ,"Track Spoiled Foods", "Data Spreadsheets"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    "Products Distributed", "Donations","Spoiled Foods", 
+    "Basement Inventory","Walk In Menu","Spreadsheets"])
 
 # Initialize session state for category, product, and quantity if not already set
 if 'category' not in st.session_state:
@@ -123,8 +161,9 @@ def handle_fraction_input(quantity_input):
     except:
         # If conversion fails, return the input as a number
         return float(quantity_input)
+                    
 
-# Tab 1: Add New Product Entry
+
 
 # Tab 1: Add New Product Entry
 with tab1:
@@ -156,6 +195,7 @@ with tab1:
         4. **Enter the Quantity Distributed**(Fractions allowed).
         5. Click **Submit** to save the data
         """)
+    
     
         # Select a category
         category = st.selectbox(
@@ -237,10 +277,307 @@ with tab1:
         grouped_data.to_csv(csv_file, index=False)
 
 
-
-        # Tab 2: Walk In Menu
-
+# Tab 2: Track Donated Products
 with tab2:
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
+        
+    # Show login if not authenticated
+    if st.session_state.authenticated == False:
+        st.title("🔒 Restricted Access")
+    
+        # Login button
+        with st.form("login_form3"):
+            password_input = st.text_input("Enter Password:")
+            submit_button = st.form_submit_button("Login")  # Pressing Enter submits the form
+    
+            if submit_button:
+                if password_input == PASSWORD:
+                    st.session_state.authenticated = True
+                    st.rerun()
+                else:
+                    st.error("Incorrect password. Try again.")
+                
+    
+    # Show the page content only if authenticated
+    if st.session_state.authenticated == True:
+        st.header("Track Donated Products")
+        st.markdown("""
+        1. **Select a Donor**
+        2. **Select Contents Donated**
+        3. **Enter Donation Weight**: Please use the scale to weigh donations.
+        4. **Additional Notes**: Add notes on specific contents and donor if necessary.
+        """)
+    
+        # Date of donation
+        date = st.date_input("Date", value=datetime.today(), key="donated_date")
+        
+        donation_provider = st.selectbox(
+            "Donation Provider",
+           ["Aggie Eats", "Aggie Compass", "COHO", "Davis Lutheran Church", "Dining Commons",
+            "EOP", "Food Recovery Network", "Individual Donor", "MU Market",
+            "St. Martins", "Student Farm", "Student Organization",
+            "UCD Organization", "YFB","🚗Food Drive", "🎉Event","Other"],
+            key="donation_provider"
+        )
+        # Additional input if "Student Organization" or "Other" is selected
+        if donation_provider in ["Student Organization", "Individual Donor","🎉Event","🚗Food Drive", "Other"]:
+            donor_details = st.text_input("If \"Student Organization\" or \"Other\" or \"Individual Donor\" or \"UCD Organization\" or \"🎉Event\" or \"🚗Food Drive\", please list details below:", key="donor_details")
+        else:
+            donor_details = ""
+
+            # Multi-select for contents
+        donation_contents = st.multiselect(
+            "Contents",
+            ["Fruit", "Vegetables", "Protein", "Dairy", "Canned/Jarred Goods", "Snacks", "Grains/Baking Goods",
+             "Personal Care", "Mixed", "Other"],
+            key="donation_contents"
+        )
+
+        # Additional input if "Other" is selected in contents
+        if "Other" in donation_contents:
+            other_contents_details = st.text_input("If \"Other\", please specify contents:", key="other_contents_details")
+        else:
+            other_contents_details = ""
+    
+
+        # Input fields for donated products
+        donation_weight = st.number_input("Donation Weight (lbs)", min_value=0.0, step=0.1, key="donation_weight")
+    
+
+        # Additional notes on contents
+        additional_notes = st.text_area("Additional Notes on Contents", key="additional_notes")
+    
+        # Create a new entry for the donation
+        new_entry = {
+            "Date": date.strftime("%Y-%m-%d"),
+            "Donation Provider": donation_provider,
+            "Contents": ", ".join(donation_contents),
+            "Other Contents Details": other_contents_details,
+            "Donation Weight (lbs)": donation_weight,
+            "Additional Notes": additional_notes
+        }
+    
+        # Submit button
+        submit_donation = st.button("Submit Donation")
+    
+        # Save donation details if all fields are filled and the button is clicked
+        if submit_donation:
+            if donation_weight and donation_provider:
+                try:
+                    donated_data = pd.read_csv(donated_file)
+                except FileNotFoundError:
+                    donated_data = pd.DataFrame(columns=[
+                        "Date", "Donation Provider", "Donation Weight (lbs)", "Contents", "Other Contents Details", 
+                        "Donor Details", "Additional Notes"
+                    ])
+    
+                donated_data = pd.concat([donated_data, pd.DataFrame([new_entry])], ignore_index=True)
+                donated_data.to_csv(donated_file, index=False)
+    
+                st.toast(f"Donation details from '{donation_provider}' saved successfully!🎉", icon="✅")
+                
+            else:
+                st.warning("Please fill out all required fields.")
+
+
+
+
+
+# Tab 3: Track Spoiled Foods
+with tab3:
+
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
+        
+    # Show login if not authenticated
+    if st.session_state.authenticated == False:
+        st.title("🔒 Restricted Access")
+    
+        # Login button
+        with st.form("login_form4"):
+            password_input = st.text_input("Enter Password:")
+            submit_button = st.form_submit_button("Login")  # Pressing Enter submits the form
+    
+            if submit_button:
+                if password_input == PASSWORD:
+                    st.session_state.authenticated = True
+                    st.rerun()
+                else:
+                    st.error("Incorrect password. Try again.")
+                
+    
+    # Show the page content only if authenticated
+    if st.session_state.authenticated == True:
+        st.header("Track Spoiled Foods")
+        st.markdown("""
+        1. **Select a Contents of Spoiled Foods**: Select all that apply.
+        2. **Enter Total Item Weight**: Please use the scale to weigh donations.
+        3. **Select Destination**: Where are these items going to?
+        4. **Additional Notes**: Add notes if important.
+        """)
+    
+        # Date of spoilage
+        date = st.date_input("Date", value=datetime.today(), key="spoiled_date")
+
+        # Contents (multi-select)
+        contents = st.multiselect(
+            "Contents",
+            ["Fruit", "Vegetables", "Protein", "Dairy", "Canned/Jarred Goods", "Snacks", "Grains/Baking Goods",
+             "Personal Care", "Mixed", "Other"]
+        )
+    
+        # Additional input if "Other" is selected in contents
+        if "Other" in contents:
+            contents_details = st.text_input("If 'Other', please specify contents:", key="spoiled_contents_details")
+        else:
+            contents_details = ""
+
+    
+        # Input total item weight
+        total_weight = st.number_input("Total Item Weight (lbs.)", min_value=0.0, step=0.1, key="spoiled_total_weight")
+    
+
+        # Destination of items
+        destination = st.multiselect(
+            "Where are these items going to?",
+            ["Compost", "Landfill"],
+            key="spoiled_destination"
+        )
+        
+        additional_spoil_notes = st.text_area("Additional Notes?", key="additional_spoil_notes")
+    
+        # Create a new entry for the spoiled food
+        new_entry = {
+            "Date": date.strftime("%Y-%m-%d"),
+            "Contents": ", ".join(contents),
+            "Contents Details": contents_details,
+            "Total Item Weight (lbs.)": total_weight,
+            "Destination": ", ".join(destination),
+            "Additional Notes": additional_spoil_notes
+        }
+    
+        # Submit button
+        submit_spoiled = st.button("Submit Spoiled Food")
+    
+        # Save spoiled food details if all fields are filled and the button is clicked
+        if submit_spoiled:
+            if total_weight and contents and destination:
+                try:
+                    spoiled_data = pd.read_csv(spoiled_file)
+                except FileNotFoundError:
+                    spoiled_data = pd.DataFrame(columns=[
+                        "Date", "Contents", "Contents Details","Total Item Weight (lbs.)", "Destination", "Additional Notes,"
+                    ])
+    
+                spoiled_data = pd.concat([spoiled_data, pd.DataFrame([new_entry])], ignore_index=True)
+                spoiled_data.to_csv(spoiled_file, index=False)
+    
+                st.toast(f"Spoiled food details saved successfully!🎉", icon="✅")
+            else:
+                st.warning("Please fill out all required fields.")
+
+
+
+
+# Tab 4: Track Basement Inventory
+with tab4:
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
+        
+    # Show login if not authenticated
+    if st.session_state.authenticated == False:
+        st.title("🔒 Restricted Access")
+    
+        # Login button
+        with st.form("login_form6"):
+            password_input = st.text_input("Enter Password:")
+            submit_button = st.form_submit_button("Login")  # Pressing Enter submits the form
+    
+            if submit_button:
+                if password_input == PASSWORD:
+                    st.session_state.authenticated = True
+                    st.rerun()
+                else:
+                    st.error("Incorrect password. Try again.")
+    
+    # Show the page content only if authenticated
+    if st.session_state.authenticated == True:
+        st.header("Track Basement Inventory")
+        st.markdown("""
+        1. **Select Rack Number**: Select the rack the item was taken from.
+        2. **Select Item Taken**: Select the item taken.
+        3. **Total Units/Boxes Taken**: Enter the quantity taken.
+        4. **Additional Notes**: Add notes if important.
+        5. **🔴IMPORTANT**: Mark inventory taken one rack at a time.
+        """)
+        with st.expander("Click to view map"):
+            st.image("basement.png")
+                
+
+        #Date of Inventory Update
+        date = st.date_input("Date", value=datetime.today(), key="inventory_date")
+
+        # Rack Number
+        rack = st.selectbox(
+            "Select Rack Number",[f"Rack {i}" for i in range(1,11)],)
+
+        options = {
+            "Rack 1": ["Silicon Lube","Water based Lube", "Warer + latex Hybride lube", "Kimono Maxx", "Kimono Microthin", "Lifestyle Latex Condoms", "Lifestyle Non Latex Condoms", "Latex dental dams", "Silicon lube (big box)"],
+            "Rack 2": ["Clearblue Rapid Detection Pregnancy Test", "My Way Emergancy Contraceptive", "Loradamed (Allergry medicine)", "Antacid", "Asprin", "Iburprofen", "Bandages", "Triple Antibiotic Ointment", "Plastic foodservice film", "Pantry tote bags"],
+            "Rack 3": ["Empty Spray Bottle", "1 Gallon Floor Cleaner", "BioTuf Compostable Liner", "Small Trash Bag", "Sani Multi-Surface Wipes", "Clorax Multi-Surface Spray", "Fix Smith Shop Towel", "Swiffer Wet Jet Pad", "Miscellaneous Cleaning Supply (found on bottom on shelf)", "Spice Jar Caps", "Spice Jar Bottle", "Trash bags"],
+            "Rack 4": ["Small Black Nitrile Gloves", "Medium Black Nitrile Gloves", "Large Black Nitrile Gloves", "Plastic Umbrella Base", "24 oz Soup Container", "24 oz Soup Container Lid", "Kraft Food Container", "32oz Take out containers (on floor)"],
+            "Rack 5": ["Aunt Flow Mentural Pads", "Aunt Flow Cartridge Tampon", "Aunt Flow Universal Vendor Tampoon", "Poise Pads (Moderate Regular/ 4)", "Kotex Pads", "Depend Adult Night Defense Underwear (Size: S)"],
+            "Rack 6": ["Stick Deodorant","Twin Blade Blue Razor","Biocorn Conditioner","Dove Body wash","Biocorn Body wash","Biocorn Shampoo","Biocorn Shaving kit","Biocorn Vanity Kit","Dove Conditioner","Dove Shampoo","Biocorn Body Lotion"],
+            "Rack 7": ["FreshMint fluoride toothpaste","AU D' EDEN Vanity Kit","DawnMist Combs","Freshmint toothbrushes"],
+            "Rack 8": ["Aunt Flow Mentural Pads (also found in rack 5)", "Bathroom Tissue "],
+            "Rack 9": ["Bagged order paper bags"],
+            "Rack 10": []
+        }
+
+
+        # Contents (multi-select)
+        contents = st.multiselect("Select Items Taken", options[rack])
+    
+        # Input total boxes taken
+        total_weight = st.number_input("Total Units/Boxes Taken", min_value=0.0, step=0.1, key="boxes_taken")
+    
+        
+        additional_inventory_notes = st.text_area("Additional Notes?", key="additional_inventory_notes")
+    
+        # Create a new entry for the inventory
+        new_entry = {
+            "Date": date.strftime("%Y-%m-%d"),
+            "Rack": rack,
+            "Contents Taken": ", ".join(contents),
+            "Total Units/Boxes Taken": total_weight,
+            "Additional Notes": additional_inventory_notes
+        }
+    
+        # Submit button
+        submit_inventory = st.button("Submit Inventory")
+    
+        # Save inventory details if all fields are filled and the button is clicked
+        if submit_inventory:
+            if total_weight and contents:
+                try:
+                    inventory_data = pd.read_csv(inventory_file)
+                except FileNotFoundError:
+                    inventory_data = pd.DataFrame(columns=[
+                        "Date", "Rack", "Contents Taken", "Total Units/Boxes Taken", "Additional Notes"
+                    ])
+    
+                inventory_data = pd.concat([inventory_data, pd.DataFrame([new_entry])], ignore_index=True)
+                inventory_data.to_csv(inventory_file, index=False)
+    
+                st.toast(f"Inventory details saved successfully!🎉", icon="✅")
+            else:
+                st.warning("Please fill out all required fields.")
+
+
+
+# Tab 5: Walk In Menu
+with tab5:
     if "authenticated" not in st.session_state:
         st.session_state.authenticated = False
         
@@ -355,203 +692,15 @@ with tab2:
         st.write("### Products That Are No Longer In Stock", st.session_state.removed_products_for_today)
 
 
-# Tab 4: Track Donated Products
-with tab3:
-    if "authenticated" not in st.session_state:
-        st.session_state.authenticated = False
-        
-    # Show login if not authenticated
-    if st.session_state.authenticated == False:
-        st.title("🔒 Restricted Access")
-    
-        # Login button
-        with st.form("login_form3"):
-            password_input = st.text_input("Enter Password:")
-            submit_button = st.form_submit_button("Login")  # Pressing Enter submits the form
-    
-            if submit_button:
-                if password_input == PASSWORD:
-                    st.session_state.authenticated = True
-                    st.rerun()
-                else:
-                    st.error("Incorrect password. Try again.")
-                
-    
-    # Show the page content only if authenticated
-    if st.session_state.authenticated == True:
-        st.header("Track Donated Products")
-        st.markdown("""
-        1. **Select a Donor**
-        2. **Select Contents Donated**
-        3. **Enter Donation Weight**: Please use the scale to weigh donations.
-        4. **Additional Notes**: Add notes on specific contents and donor if necessary.
-        """)
-    
-        # Date of donation
-        date = st.date_input("Date", value=datetime.today(), key="donated_date")
-        
-        donation_provider = st.selectbox(
-            "Donation Provider",
-            ["Aggie Compass", "Student Farm", "Food Recovery Network", "COHO", "MU Market", 
-             "Davis Lutheran Church", "EOP", "YFB", "Dining Commons", "Student Organization", "UCD Organization", "Individual Donor", "Other"],
-            key="donation_provider"
-        )
-        # Additional input if "Student Organization" or "Other" is selected
-        if donation_provider in ["Student Organization", "Individual Donor", "Other"]:
-            donor_details = st.text_input("If \"Student Organization\" or \"Other\" or \"Individual Donor\" or \"UCD Organization\", please list donator below:", key="donor_details")
-        else:
-            donor_details = ""
-
-            # Multi-select for contents
-        donation_contents = st.multiselect(
-            "Contents",
-            ["Fruit", "Vegetables", "Grains", "Bottled/Canned Goods", "Dairy", "Protein", "Drinks (non-dairy)", "Sweets/Snacks", "Plastic Packaged Goods", "Toiletries", "Menstrual Products", "Other"],
-            key="donation_contents"
-        )
-
-        # Additional input if "Other" is selected in contents
-        if "Other" in donation_contents:
-            other_contents_details = st.text_input("If \"Other\", please specify contents:", key="other_contents_details")
-        else:
-            other_contents_details = ""
-    
-
-        # Input fields for donated products
-        donation_weight = st.number_input("Donation Weight (lbs)", min_value=0.0, step=0.1, key="donation_weight")
-    
-
-        # Additional notes on contents
-        additional_notes = st.text_area("Additional Notes on Contents", key="additional_notes")
-    
-        # Create a new entry for the donation
-        new_entry = {
-            "Date": date.strftime("%Y-%m-%d"),
-            "Donation Provider": donation_provider,
-            "Contents": ", ".join(donation_contents),
-            "Other Contents Details": other_contents_details,
-            "Donation Weight (lbs)": donation_weight,
-            "Additional Notes": additional_notes
-        }
-    
-        # Submit button
-        submit_donation = st.button("Submit Donation")
-    
-        # Save donation details if all fields are filled and the button is clicked
-        if submit_donation:
-            if donation_weight and donation_provider:
-                try:
-                    donated_data = pd.read_csv(donated_file)
-                except FileNotFoundError:
-                    donated_data = pd.DataFrame(columns=[
-                        "Date", "Donation Provider", "Donation Weight (lbs)", "Contents", "Other Contents Details", 
-                        "Donor Details", "Additional Notes"
-                    ])
-    
-                donated_data = pd.concat([donated_data, pd.DataFrame([new_entry])], ignore_index=True)
-                donated_data.to_csv(donated_file, index=False)
-    
-                st.toast(f"Donation details from '{donation_provider}' saved successfully!🎉", icon="✅")
-                
-            else:
-                st.warning("Please fill out all required fields.")
-
-# Tab 4: Track Spoiled Foods
-
-with tab4:
-
-    if "authenticated" not in st.session_state:
-        st.session_state.authenticated = False
-        
-    # Show login if not authenticated
-    if st.session_state.authenticated == False:
-        st.title("🔒 Restricted Access")
-    
-        # Login button
-        with st.form("login_form4"):
-            password_input = st.text_input("Enter Password:")
-            submit_button = st.form_submit_button("Login")  # Pressing Enter submits the form
-    
-            if submit_button:
-                if password_input == PASSWORD:
-                    st.session_state.authenticated = True
-                    st.rerun()
-                else:
-                    st.error("Incorrect password. Try again.")
-                
-    
-    # Show the page content only if authenticated
-    if st.session_state.authenticated == True:
-        st.header("Track Spoiled Foods")
-        st.markdown("""
-        1. **Select a Contents of Spoiled Foods**: Select all that apply.
-        2. **Enter Total Item Weight**: Please use the scale to weigh donations.
-        3. **Select Destination**: Where are these items going to?
-        4. **Additional Notes**: Add notes if important.
-        """)
-    
-        # Date of spoilage
-        date = st.date_input("Date", value=datetime.today(), key="spoiled_date")
-
-        # Contents (multi-select)
-        contents = st.multiselect(
-            "Contents",
-            ["Fruit", "Vegetables", "Grains", "Bottled/Canned Goods", "Dairy", "Protein", "Drinks (non-dairy)", 
-             "Sweets/Snacks", "Plastic Packaged Goods", "Toiletries", "Menstrual Products", "Mixed", "Other"],
-            key="spoiled_contents"
-        )
-    
-        # Additional input if "Other" is selected in contents
-        if "Other" in contents:
-            contents_details = st.text_input("If 'Other', please specify contents:", key="spoiled_contents_details")
-        else:
-            contents_details = ""
-
-    
-        # Input total item weight
-        total_weight = st.number_input("Total Item Weight (lbs.)", min_value=0.0, step=0.1, key="spoiled_total_weight")
-    
-
-        # Destination of items
-        destination = st.multiselect(
-            "Where are these items going to?",
-            ["Compost", "Landfill"],
-            key="spoiled_destination"
-        )
-        
-        additional_spoil_notes = st.text_area("Additional Notes?", key="additional_spoil_notes")
-    
-        # Create a new entry for the spoiled food
-        new_entry = {
-            "Date": date.strftime("%Y-%m-%d"),
-            "Contents": ", ".join(contents),
-            "Contents Details": contents_details,
-            "Total Item Weight (lbs.)": total_weight,
-            "Destination": ", ".join(destination),
-            "Additional Notes": additional_spoil_notes
-        }
-    
-        # Submit button
-        submit_spoiled = st.button("Submit Spoiled Food")
-    
-        # Save spoiled food details if all fields are filled and the button is clicked
-        if submit_spoiled:
-            if total_weight and contents and destination:
-                try:
-                    spoiled_data = pd.read_csv(spoiled_file)
-                except FileNotFoundError:
-                    spoiled_data = pd.DataFrame(columns=[
-                        "Date", "Contents", "Contents Details","Total Item Weight (lbs.)", "Destination", "Additional Notes,"
-                    ])
-    
-                spoiled_data = pd.concat([spoiled_data, pd.DataFrame([new_entry])], ignore_index=True)
-                spoiled_data.to_csv(spoiled_file, index=False)
-    
-                st.toast(f"Spoiled food details saved successfully!🎉", icon="✅")
-            else:
-                st.warning("Please fill out all required fields.")
 
 
-with tab5:
+
+
+
+
+
+# Tab 6: Data Spreadsheets Overview
+with tab6:
     if "authenticated" not in st.session_state:
         st.session_state.authenticated = False
         
@@ -570,11 +719,12 @@ with tab5:
                     st.rerun()
                 else:
                     st.error("Incorrect password. Try again.")
+
 # Show the page content only if authenticated
     if st.session_state.authenticated == True:
         st.header("Data Spreadsheet Overview")
 
-        files = {"Walk In Menu": walk_in_menu, "Products Distributed": csv_file, "Donated Products": donated_file, "Spoiled Foods": spoiled_file}
+        files = {"Walk In Menu": walk_in_menu, "Products Distributed": csv_file, "Donated Products": donated_file, "Spoiled Foods": spoiled_file, "Basement Inventory": inventory_file}
 
         for name, file_path in files.items():
             st.subheader(name)
@@ -583,3 +733,7 @@ with tab5:
                 st.dataframe(data)
             except FileNotFoundError:
                 st.warning(f"No data available for {name}.")
+
+
+
+
