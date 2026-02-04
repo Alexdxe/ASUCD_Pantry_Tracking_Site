@@ -523,25 +523,27 @@ with tab4:
             "Select Rack Number",[f"Rack {i}" for i in range(1,11)],)
 
         options = {
-            "Rack 1": ["Silicon Lube","Water based Lube", "Warer + latex Hybride lube", "Kimono Maxx", "Kimono Microthin", "Lifestyle Latex Condoms", "Lifestyle Non Latex Condoms", "Latex dental dams", "Silicon lube (big box)"],
-            "Rack 2": ["Clearblue Rapid Detection Pregnancy Test", "My Way Emergancy Contraceptive", "Loradamed (Allergry medicine)", "Antacid", "Asprin", "Iburprofen", "Bandages", "Triple Antibiotic Ointment", "Plastic foodservice film", "Pantry tote bags"],
-            "Rack 3": ["Empty Spray Bottle", "1 Gallon Floor Cleaner", "BioTuf Compostable Liner", "Small Trash Bag", "Sani Multi-Surface Wipes", "Clorax Multi-Surface Spray", "Fix Smith Shop Towel", "Swiffer Wet Jet Pad", "Miscellaneous Cleaning Supply (found on bottom on shelf)", "Spice Jar Caps", "Spice Jar Bottle", "Trash bags"],
-            "Rack 4": ["Small Black Nitrile Gloves", "Medium Black Nitrile Gloves", "Large Black Nitrile Gloves", "Plastic Umbrella Base", "24 oz Soup Container", "24 oz Soup Container Lid", "Kraft Food Container", "32oz Take out containers (on floor)"],
-            "Rack 5": ["Aunt Flow Mentural Pads", "Aunt Flow Cartridge Tampon", "Aunt Flow Universal Vendor Tampoon", "Poise Pads (Moderate Regular/ 4)", "Kotex Pads", "Depend Adult Night Defense Underwear (Size: S)"],
-            "Rack 6": ["Stick Deodorant","Twin Blade Blue Razor","Biocorn Conditioner","Dove Body wash","Biocorn Body wash","Biocorn Shampoo","Biocorn Shaving kit","Biocorn Vanity Kit","Dove Conditioner","Dove Shampoo","Biocorn Body Lotion"],
-            "Rack 7": ["FreshMint fluoride toothpaste","AU D' EDEN Vanity Kit","DawnMist Combs","Freshmint toothbrushes"],
-            "Rack 8": ["Aunt Flow Mentural Pads (also found in rack 5)", "Bathroom Tissue "],
-            "Rack 9": ["Bagged order paper bags"],
-            "Rack 10": []
+            "Rack 1": ["Silicon Lube","Water based Lube", "Warer + latex Hybride lube", "Kimono Maxx", "Kimono Microthin", "Lifestyle Latex Condoms", "Lifestyle Non Latex Condoms", "Latex dental dams", "Silicon lube (big box)", "Other"],
+            "Rack 2": ["Clearblue Rapid Detection Pregnancy Test", "My Way Emergancy Contraceptive", "Loradamed (Allergry medicine)", "Antacid", "Asprin", "Iburprofen", "Bandages", "Triple Antibiotic Ointment", "Plastic foodservice film", "Pantry tote bags", "Other"],
+            "Rack 3": ["Empty Spray Bottle", "1 Gallon Floor Cleaner", "BioTuf Compostable Liner", "Small Trash Bag", "Sani Multi-Surface Wipes", "Clorax Multi-Surface Spray", "Fix Smith Shop Towel", "Swiffer Wet Jet Pad", "Miscellaneous Cleaning Supply (found on bottom on shelf)", "Spice Jar Caps", "Spice Jar Bottle", "Trash bags", "Other"],
+            "Rack 4": ["Small Black Nitrile Gloves", "Medium Black Nitrile Gloves", "Large Black Nitrile Gloves", "Plastic Umbrella Base", "24 oz Soup Container", "24 oz Soup Container Lid", "Kraft Food Container", "32oz Take out containers (on floor)", "Other"],
+            "Rack 5": ["Aunt Flow Mentural Pads", "Aunt Flow Cartridge Tampon", "Aunt Flow Universal Vendor Tampoon", "Poise Pads (Moderate Regular/ 4)", "Kotex Pads", "Depend Adult Night Defense Underwear (Size: S)", "Other"],
+            "Rack 6": ["Stick Deodorant","Twin Blade Blue Razor","Biocorn Conditioner","Dove Body wash","Biocorn Body wash","Biocorn Shampoo","Biocorn Shaving kit","Biocorn Vanity Kit","Dove Conditioner","Dove Shampoo","Biocorn Body Lotion", "Other"],
+            "Rack 7": ["FreshMint fluoride toothpaste","AU D' EDEN Vanity Kit","DawnMist Combs","Freshmint toothbrushes", "Other"],
+            "Rack 8": ["Aunt Flow Mentural Pads (also found in rack 5)", "Bathroom Tissue ", "Other"],
+            "Rack 9": ["Bagged order paper bags", "Other"],
+            "Rack 10": ["Other"]
         }
 
 
         # Contents (multi-select)
         contents = st.multiselect("Select Items Taken", options[rack])
+        if "Other" in contents:
+            other_inventory_details = st.text_input("If 'Other', please specify contents:", key="inventory_contents_details")
+    
     
         # Input total boxes taken
         total_weight = st.number_input("Total Units/Boxes Taken", min_value=0.0, step=0.1, key="boxes_taken")
-    
         
         additional_inventory_notes = st.text_area("Additional Notes?", key="additional_inventory_notes")
     
@@ -549,7 +551,7 @@ with tab4:
         new_entry = {
             "Date": date.strftime("%Y-%m-%d"),
             "Rack": rack,
-            "Contents Taken": ", ".join(contents),
+            "Contents Taken": ", ".join(contents) + (f" (Other: {other_inventory_details})" if "Other" in contents else ""),
             "Total Units/Boxes Taken": total_weight,
             "Additional Notes": additional_inventory_notes
         }
