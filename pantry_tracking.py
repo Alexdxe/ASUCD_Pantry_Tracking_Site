@@ -421,9 +421,9 @@ with tab2:
         donation_provider = st.selectbox(
             "Donation Provider",
            ["Aggie Eats", "Aggie Compass", "COHO", "Davis Lutheran Church", "Dining Commons",
-            "EOP", "Food Recovery Network", "Individual Donor", "MU Market",
-            "St. Martins", "Student Farm", "Student Organization",
-            "UCD Organization", "YFB","🚗Food Drive", "🎉Event","Other"],
+            "EOP", "Food Recovery Network","Fresh Focus", "MU Market", "Silo",
+            "St. Martins", "Student Housing and Dining", "Student Farm", "Student Organization",
+            "UCD Organization", "YFB","🚗Food Drive", "🎉Event", "Individual Donor(s)", "Other"],
             key="donation_provider"
         )
         # Additional input if "Student Organization" or "Other" is selected
