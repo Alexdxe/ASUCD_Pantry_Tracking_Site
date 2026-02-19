@@ -674,7 +674,7 @@ with tab4:
 
 
         # Contents (multi-select)
-        contents = st.multiselect("Select Items Taken", options[rack])
+        contents = st.multiselect("Select All Items Taken", options[rack])
 
         other_inventory_details = ""
         if "Other" in contents:
