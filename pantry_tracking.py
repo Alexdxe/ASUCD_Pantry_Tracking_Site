@@ -136,7 +136,7 @@ div[data-testid="stFormSubmitButton"] > button * {
     background-image: url('https://thepantry.ucdavis.edu/sites/g/files/dgvnsk13406/files/logo-white-transparentbg.png'), 
                       url('https://static.vecteezy.com/system/resources/previews/037/738/768/non_2x/sweet-junk-food-and-awning-background-vector.jpg');
     background-size: 170px, cover;
-    background-position: 75% 20%, center;
+    background-position: 80% 20%, center;
     background-repeat: no-repeat, no-repeat;
     background-attachment: fixed, fixed;
 }
