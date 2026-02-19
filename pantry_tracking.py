@@ -74,76 +74,115 @@ for category, items in categories.items():
     categories[category] = sorted(items)
 
 
-# CSS for styling
-background_image_css = """
-<style>
-    [data-testid="stAppViewContainer"] {
-        background-image: url('https://thepantry.ucdavis.edu/sites/g/files/dgvnsk13406/files/logo-white-transparentbg.png'), 
-                          url('https://static.vecteezy.com/system/resources/previews/009/003/028/non_2x/organic-food-and-fruit-shopping-background-free-vector.jpg');
-        background-size: 165px, cover;
-        background-position: 85% 20%; /* Move logo slightly left and down */
-        background-repeat: no-repeat, no-repeat;
-        background-attachment: fixed, fixed;
-    }
-    [data-testid="stHeader"] {
-        background: rgba(0,0,0,0);
-    }
-</style>
-"""
-st.markdown(
-    """
-    <style>
-    /* Force all text inside radio buttons to be black */
-    div[role="radiogroup"] * {
-        color: black !important;
-    }
-
-    /* Ensure all text in widgets, headers, and labels is black */
-    .stTabs [role="tab"], 
-    html, body, .stMarkdown, .stTextInput, .stSelectbox, .stHeader, .stSubHeader, 
-    h1, h2, h3, h4, h5, h6, .stHeader, label[data-testid="stWidgetLabel"] {
-        color: black !important;
-    }
-
-    /* General Notification Styling */
-    div[data-testid="stNotification"] {
-        padding: 10px !important;
-        border-radius: 5px !important;
-        color: black !important;
-    }
-
-
-
-    /* Ensure background does not override the text color */
-    .stApp {
-        background-color: white !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-##CSS styling for expander
+## CSS for styling
 st.markdown("""
 <style>
-div[data-testid="stExpander"] > details > summary {
-    background-color: #222;
-    color: white;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+/* =========================================================
+   1. GLOBAL FONT (Fixed to prevent "keyboard_arrow" bug)
+   ========================================================= */
+/* We target specific text tags but specifically EXCLUDE "span" tags. 
+   Streamlit uses spans for Material Icons. If you force Poppins on spans, 
+   the icons break and turn into text. */
+p, h1, h2, h3, h4, h5, h6, label, .stMarkdown {
+    font-family: 'Poppins', sans-serif !important;
+    color: black !important;
 }
+
+/* =========================================================
+   2. UNIFIED TEXTBOX COLORS
+   ========================================================= */
+/* Forces every single input type to be the exact same pure white */
+div[data-baseweb="input"] > div,
+div[data-baseweb="textarea"] > div,
+div[data-baseweb="select"] > div,
+div[data-baseweb="datepicker"] > div {
+    background-color: #ffffff !important; 
+    border-radius: 8px !important;
+    border: 1px solid rgba(0,0,0,0.2) !important;
+    box-shadow: none !important;
+}
+
+/* Ensures text typed inside the boxes is black */
+input, textarea, div[data-baseweb="select"] * {
+    color: black !important;
+}
+
+/* =========================================================
+   3. SUBMIT BUTTON FIX (Black background, White text)
+   ========================================================= */
+/* 3. BUTTON STYLING (Regular & Form Submit) */
+/* Targets both st.button and st.form_submit_button */
+div.stButton > button, 
+div[data-testid="stFormSubmitButton"] > button {
+    background-color: #000000 !important;
+    border-radius: 8px !important;
+    border: 1px solid #000000 !important;
+    width: 100%;
+}
+
+/* Forces text inside buttons to be White */
+div.stButton > button *, 
+div[data-testid="stFormSubmitButton"] > button * {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+/* =========================================================
+   4. BACKGROUND IMAGE
+   ========================================================= */
+[data-testid="stAppViewContainer"] {
+    background-image: url('https://thepantry.ucdavis.edu/sites/g/files/dgvnsk13406/files/logo-white-transparentbg.png'), 
+                      url('https://static.vecteezy.com/system/resources/previews/009/003/028/non_2x/organic-food-and-fruit-shopping-background-free-vector.jpg');
+    background-size: 165px, cover;
+    background-position: 85% 20%, center;
+    background-repeat: no-repeat, no-repeat;
+    background-attachment: fixed, fixed;
+}
+.stApp, [data-testid="stHeader"] {
+    background-color: transparent !important;
+}
+            
+/* =========================================================
+   5. NOTIFICATION STYLING (Toasts & Success Messages)
+   ========================================================= */
+/* Styles the popup container */
+[data-testid="stSuccess"], [data-testid="stNotification"] {
+    background-color: #000000 !important;
+    border-radius: 8px !important;
+    border: none !important;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.3) !important;
+}
+
+/* Forces all text and icons inside the popup to be white */
+[data-testid="stSuccess"] *, [data-testid="stNotification"] * {
+    color: #ffffff !important;
+}            
 </style>
 """, unsafe_allow_html=True)
 
+def text_card(text):
+        st.markdown(
+            f"""
+            <div class="text-card">
 
-st.markdown(background_image_css, unsafe_allow_html=True)
+{text}
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
 
 # Title
 st.title("Pantry Tracking Dashboard")
 
-
 # Tabs
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Products Distributed", "Donations","Spoiled Foods", 
-    "Basement Inventory","Walk In Menu","Spreadsheets"])
+    "Basement","Walk In Menu","Spreadsheets"])
 
 # Initialize session state for category, product, and quantity if not already set
 if 'category' not in st.session_state:
@@ -161,7 +200,60 @@ def handle_fraction_input(quantity_input):
     except:
         # If conversion fails, return the input as a number
         return float(quantity_input)
-                    
+
+           
+#Tab 0: Home.
+# with tab0: 
+#     if "authenticated" not in st.session_state:
+#         st.session_state.authenticated = False
+        
+#     # Show login if not authenticated
+#     if st.session_state.authenticated == False:
+#         st.title("🔒 Restricted Access")
+    
+#         # Login button
+#         with st.form("login_form1"):
+#             password_input = st.text_input("Enter Password:")
+#             submit_button = st.form_submit_button("Login") 
+
+#             if submit_button:
+#                 if password_input == PASSWORD:
+#                     st.session_state.authenticated = True
+#                     st.rerun()
+#                 else:
+#                     st.error("Incorrect password. Try again.")
+# # Show the page content only if authenticated
+#     if st.session_state.authenticated == True:
+#         st.subheader('Welcome to the Pantry Tracking Dashboard!')
+#         text_card("""
+#                 <div style="
+#                     background: rgba(255,255,255,0.85);
+#                     backdrop-filter: blur(4px);
+#                     padding: 20px;
+#                     border-radius: 12px;
+#                     ">
+#                     The data collected is used to perform data analysis based on our donors, while also tracking times when items leave the Pantry.
+#                     """, unsafe_allow_html=True)
+
+#         st.subheader('What can I track?')
+#         text_card("""
+#                 <div style="
+#                     background: rgba(255,255,255,0.85);
+#                     backdrop-filter: blur(4px);
+#                     padding: 20px;
+#                     border-radius: 12px;
+#                     ">
+
+#                 - **Products Distributed**: Track products that leave the Pantry. This includes produce, toiletries, and more.
+#                 - **Donations**: Record details of donated products.
+#                 - **Spoiled Foods**: Log spoiled food items.
+#                 - **Basement Inventory**: Keep track of inventory taken from the basement.
+#                 - **Walk-In Menu**: Manage the walk-in menu by displaying products currently in stock.
+#                 - **Data Spreadsheets Overview**: View all collected data.
+
+#                 </div>
+#                 """, unsafe_allow_html=True)
+
 
 
 
@@ -188,7 +280,8 @@ with tab1:
 # Show the page content only if authenticated
     if st.session_state.authenticated == True:
         st.header('**Instructions for Adding Products**')
-        st.markdown("""
+        
+        text_card("""
         1. **Select a Category**
         2. **Select a Product** or "Other (Custom Product)".
         3. **Select How It Will be Counted**.
@@ -246,7 +339,7 @@ with tab1:
         if selected_product == "Other (Custom Product)" and (custom_product_name not in st.session_state.categories[category]): # no more duplicate names
             st.session_state.categories[category].append(custom_product_name)
             
-        st.toast(f"Product '{custom_product_name}' in category '{category}' added with initial quantity: {initial_quantity}🎉", icon="✅")
+        st.success(f"Product '{custom_product_name}' in category '{category}' added with initial quantity: {initial_quantity}🎉", icon="✅")
 
         # Save data to CSV file
         today = datetime.today().strftime('%Y-%m-%d')  # Get today's date
@@ -277,6 +370,12 @@ with tab1:
         grouped_data.to_csv(csv_file, index=False)
 
 
+
+
+
+
+
+
 # Tab 2: Track Donated Products
 with tab2:
     if "authenticated" not in st.session_state:
@@ -302,9 +401,9 @@ with tab2:
     # Show the page content only if authenticated
     if st.session_state.authenticated == True:
         st.header("Track Donated Products")
-        st.markdown("""
+        text_card("""
         1. **Select a Donor**
-        2. **Select Contents Donated**
+        2. **Select Contents Donated**: You can select multiple!
         3. **Enter Donation Weight**: Please use the scale to weigh donations.
         4. **Additional Notes**: Add notes on specific contents and donor if necessary.
         """)
@@ -375,10 +474,14 @@ with tab2:
                 donated_data = pd.concat([donated_data, pd.DataFrame([new_entry])], ignore_index=True)
                 donated_data.to_csv(donated_file, index=False)
     
-                st.toast(f"Donation details from '{donation_provider}' saved successfully!🎉", icon="✅")
+                st.success(f"Donation details from '{donation_provider}' saved successfully!🎉", icon="✅")
                 
             else:
                 st.warning("Please fill out all required fields.")
+
+
+
+
 
 
 
@@ -410,7 +513,7 @@ with tab3:
     # Show the page content only if authenticated
     if st.session_state.authenticated == True:
         st.header("Track Spoiled Foods")
-        st.markdown("""
+        text_card("""
         1. **Select a Contents of Spoiled Foods**: Select all that apply.
         2. **Enter Total Item Weight**: Please use the scale to weigh donations.
         3. **Select Destination**: Where are these items going to?
@@ -473,9 +576,14 @@ with tab3:
                 spoiled_data = pd.concat([spoiled_data, pd.DataFrame([new_entry])], ignore_index=True)
                 spoiled_data.to_csv(spoiled_file, index=False)
     
-                st.toast(f"Spoiled food details saved successfully!🎉", icon="✅")
+                st.success(f"Spoiled food details saved successfully!🎉", icon="✅")
             else:
                 st.warning("Please fill out all required fields.")
+
+
+
+
+
 
 
 
@@ -504,7 +612,7 @@ with tab4:
     # Show the page content only if authenticated
     if st.session_state.authenticated == True:
         st.header("Track Basement Inventory")
-        st.markdown("""
+        text_card("""
         1. **Select Rack Number**: Select the rack the item was taken from.
         2. **Select Item Taken**: Select the item taken.
         3. **Total Units/Boxes Taken**: Enter the quantity taken.
@@ -512,7 +620,7 @@ with tab4:
         5. **🔴IMPORTANT**: Mark inventory taken one rack at a time.
         """)
         with st.expander("Click to view map"):
-            st.image("basement.png")
+            st.image("basement.png", use_container_width=True)
                 
 
         #Date of Inventory Update
@@ -538,6 +646,8 @@ with tab4:
 
         # Contents (multi-select)
         contents = st.multiselect("Select Items Taken", options[rack])
+
+        other_inventory_details = ""
         if "Other" in contents:
             other_inventory_details = st.text_input("If 'Other', please specify contents:", key="inventory_contents_details")
     
@@ -572,9 +682,13 @@ with tab4:
                 inventory_data = pd.concat([inventory_data, pd.DataFrame([new_entry])], ignore_index=True)
                 inventory_data.to_csv(inventory_file, index=False)
     
-                st.toast(f"Inventory details saved successfully!🎉", icon="✅")
+                st.success(f"Inventory details saved successfully!🎉", icon="✅")
             else:
                 st.warning("Please fill out all required fields.")
+
+
+
+
 
 
 
@@ -602,7 +716,7 @@ with tab5:
     
     if st.session_state.authenticated == True:
         st.header('Instructions Walk In Menu')
-        st.markdown("""
+        text_card("""
         1. **Products Currently In Stock**: Products currently stocked will be shown here
         2. **Remove Products That Are No Longer In Stock**: Clicking the "Remove" button
         3. **Note**: After a product is removed it will no longer show on the Walk In Menu
@@ -726,7 +840,7 @@ with tab6:
     if st.session_state.authenticated == True:
         st.header("Data Spreadsheet Overview")
 
-        files = {"Walk In Menu": walk_in_menu, "Products Distributed": csv_file, "Donated Products": donated_file, "Spoiled Foods": spoiled_file, "Basement Inventory": inventory_file}
+        files = {"Walk In Menu": walk_in_menu, "Products Distributed": csv_file, "Donated Products": donated_file, "Spoiled Foods": spoiled_file, "Basement": inventory_file}
 
         for name, file_path in files.items():
             st.subheader(name)
