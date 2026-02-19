@@ -163,12 +163,18 @@ div[data-testid="stFormSubmitButton"] > button * {
 """, unsafe_allow_html=True)
 
 def text_card(text):
-        st.markdown(
-            f"""
-            <div class="text-card">
-
-{text}
-
+    st.markdown(
+        f"""
+        <div style="
+            background-color: #ffffff !important;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.05);
+            color: black !important;
+        ">
+            {text}
         </div>
         """,
         unsafe_allow_html=True
