@@ -624,7 +624,8 @@ with tab4:
         2. **Select Item Taken**
         3. **Total Units/Boxes Taken**
         4. **Additional Notes**: Add notes if important.
-        5. **🔴IMPORTANT**: Mark inventory taken one rack at a time. **Rack A/B/C: 11/12/13**
+        5. **Rack A/B/C: 11/12/13**
+        5. **🔴IMPORTANT**: Mark inventory taken one rack at a time.
         6. **📜Legend**: S: Small, M: Medium, L: Large, XL: Extra Large, FR: For Food Recovery Only.
         """)
         with st.expander("Click to view map"):
