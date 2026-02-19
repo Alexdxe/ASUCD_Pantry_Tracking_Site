@@ -134,9 +134,9 @@ div[data-testid="stFormSubmitButton"] > button * {
    ========================================================= */
 [data-testid="stAppViewContainer"] {
     background-image: url('https://thepantry.ucdavis.edu/sites/g/files/dgvnsk13406/files/logo-white-transparentbg.png'), 
-                      url('https://static.vecteezy.com/system/resources/previews/009/003/028/non_2x/organic-food-and-fruit-shopping-background-free-vector.jpg');
-    background-size: 165px, cover;
-    background-position: 85% 20%, center;
+                      url('https://static.vecteezy.com/system/resources/previews/037/738/768/non_2x/sweet-junk-food-and-awning-background-vector.jpg');
+    background-size: 170px, cover;
+    background-position: 75% 20%, center;
     background-repeat: no-repeat, no-repeat;
     background-attachment: fixed, fixed;
 }
@@ -248,7 +248,7 @@ def handle_fraction_input(quantity_input):
 #                 - **Donations**: Record details of donated products.
 #                 - **Spoiled Foods**: Log spoiled food items.
 #                 - **Basement Inventory**: Keep track of inventory taken from the basement.
-#                 - **Walk-In Menu**: Manage the walk-in menu by displaying products currently in stock.
+#                 - **Walk-In Menu**: Manage the walk-in mendisplaying products currently in stock.
 #                 - **Data Spreadsheets Overview**: View all collected data.
 
 #                 </div>
@@ -613,11 +613,12 @@ with tab4:
     if st.session_state.authenticated == True:
         st.header("Track Basement Inventory")
         text_card("""
-        1. **Select Rack Number**: Select the rack the item was taken from.
-        2. **Select Item Taken**: Select the item taken.
-        3. **Total Units/Boxes Taken**: Enter the quantity taken.
+        1. **Select Rack Number**
+        2. **Select Item Taken**
+        3. **Total Units/Boxes Taken**
         4. **Additional Notes**: Add notes if important.
-        5. **🔴IMPORTANT**: Mark inventory taken one rack at a time.
+        5. **🔴IMPORTANT**: Mark inventory taken one rack at a time. **Rack A/B/C: 11/12/13**
+        6. **📜Legend**: S: Small, M: Medium, L: Large, XL: Extra Large, FR: For Food Recovery Only.
         """)
         with st.expander("Click to view map"):
             st.image("basement.png", use_container_width=True)
@@ -628,19 +629,40 @@ with tab4:
 
         # Rack Number
         rack = st.selectbox(
-            "Select Rack Number",[f"Rack {i}" for i in range(1,11)],)
+            "Select Rack Number",[f"Rack {i}" for i in range(1,14)],)
 
         options = {
-            "Rack 1": ["Silicon Lube","Water based Lube", "Warer + latex Hybride lube", "Kimono Maxx", "Kimono Microthin", "Lifestyle Latex Condoms", "Lifestyle Non Latex Condoms", "Latex dental dams", "Silicon lube (big box)", "Other"],
-            "Rack 2": ["Clearblue Rapid Detection Pregnancy Test", "My Way Emergancy Contraceptive", "Loradamed (Allergry medicine)", "Antacid", "Asprin", "Iburprofen", "Bandages", "Triple Antibiotic Ointment", "Plastic foodservice film", "Pantry tote bags", "Other"],
-            "Rack 3": ["Empty Spray Bottle", "1 Gallon Floor Cleaner", "BioTuf Compostable Liner", "Small Trash Bag", "Sani Multi-Surface Wipes", "Clorax Multi-Surface Spray", "Fix Smith Shop Towel", "Swiffer Wet Jet Pad", "Miscellaneous Cleaning Supply (found on bottom on shelf)", "Spice Jar Caps", "Spice Jar Bottle", "Trash bags", "Other"],
-            "Rack 4": ["Small Black Nitrile Gloves", "Medium Black Nitrile Gloves", "Large Black Nitrile Gloves", "Plastic Umbrella Base", "24 oz Soup Container", "24 oz Soup Container Lid", "Kraft Food Container", "32oz Take out containers (on floor)", "Other"],
-            "Rack 5": ["Aunt Flow Mentural Pads", "Aunt Flow Cartridge Tampon", "Aunt Flow Universal Vendor Tampoon", "Poise Pads (Moderate Regular/ 4)", "Kotex Pads", "Depend Adult Night Defense Underwear (Size: S)", "Other"],
-            "Rack 6": ["Stick Deodorant","Twin Blade Blue Razor","Biocorn Conditioner","Dove Body wash","Biocorn Body wash","Biocorn Shampoo","Biocorn Shaving kit","Biocorn Vanity Kit","Dove Conditioner","Dove Shampoo","Biocorn Body Lotion", "Other"],
-            "Rack 7": ["FreshMint fluoride toothpaste","AU D' EDEN Vanity Kit","DawnMist Combs","Freshmint toothbrushes", "Other"],
-            "Rack 8": ["Aunt Flow Mentural Pads (also found in rack 5)", "Bathroom Tissue ", "Other"],
-            "Rack 9": ["Bagged order paper bags", "Other"],
-            "Rack 10": ["Other"]
+            "Rack 1": ["Silicon Lube","Water based Lube", "Warer + latex Hybride lube", "Kimono Maxx", "Kimono Microthin", 
+                       "Lifestyle Latex Condoms", "Lifestyle Non Latex Condoms", "Latex dental dams", "Silicon lube(L)", "SKYN Non Latex Condoms", "Other"],
+
+            "Rack 2": ["Clearblue Rapid Detection Pregnancy Test", "My Way Emergancy Contraceptive", "Loradamed (Allergry medicine)", 
+                       "Antacid", "Asprin", "Iburprofen", "Bandages", "Triple Antibiotic Ointment","Tide Pods", "Plastic foodservice film", "Spice Jar Bottle", "Pantry tote bags", "Other"],
+
+            "Rack 3": ["Empty Spray Bottle", "1 Gallon Floor Cleaner", "BioTuf Compostable Liner", "Small Trash Bag", 
+                       "Sani Multi-Surface Wipes", "Clorax Multi-Surface Spray", "Fix Smith Shop Towel", "Swiffer Wet Jet Pad", 
+                       "Miscellaneous Cleaning Supply (found on bottom on shelf)", "Spice Jar Caps", "Spice Jar Bottle", "Tide pods", "Trash bags", "Other"],
+
+            "Rack 4": ["S Black Nitrile Gloves", "M Black Nitrile Gloves", "L Black Nitrile Gloves", "XL Black Nitrile Gloves",
+                       "🛑(FR) 24 oz Soup Container", "🛑(FR) 24 oz Soup Container Lid", "🛑(FR) raft Food Container", "🛑(FR) 32oz Take out containers (on floor)", "Other"],
+
+            "Rack 5": ["AF Mentural Pads", "Kotex Ultra Thin Pads", "Aunt Flow vended Tampon", "Fresh Scent Bar soap", "Other"],
+
+            "Rack 6": ["Stick Deodorant(L)","Stick Deodorant(S)", "Twin Blade Blue Razor","Biocorn Conditioner","Dove Body wash","Biocorn Body wash",
+                       "Biocorn Shampoo","Biocorn Shaving kit","Biocorn Vanity Kit","Dove Conditioner","Dove Shampoo","Biocorn Body Lotion","Handle Comb","Petroleum Jelly", "Other"],
+
+            "Rack 7": ["FreshMint fluoride toothpaste","Kotex Ultra Thin Pads(L)' EDEN Vanity Kit","DawnMist Combs","Freshmint toothbrushes", "Bicorn BodyWash", "Kotex Ultra Thin Pads(S)", "Banana Sport SPF 30 sunscreen","Purell hand sanitizer", "Other"],
+
+            "Rack 8": ["Aunt Flow Mentural Pads (also found in rack 5)", "Bathroom Tissue ","Tampax Regular", "Bicorn conditioner", "Other"],
+
+            "Rack 9": ["Bagged order paper bags","Baggute bags", "Other"],
+
+            "Rack 10": ["Other"],
+            
+            "Rack 11": ["Extra shelving", "Broken Microwave", "Small TV", "Other"],
+
+            "Rack 12": ["Baguette bags", "Small paper bags", "Printer paper", "Egg cartons", "Other"],
+
+            "Rack 13": ["Old physical Inventory invoices", "HDX Respirator", "Code Safe", "Umbrella weights", "Blue crates", "Other"]
         }
 
 
