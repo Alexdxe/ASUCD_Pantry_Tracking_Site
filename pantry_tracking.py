@@ -284,6 +284,7 @@ with tab1:
                     st.rerun()
                 else:
                     st.error("Incorrect password. Try again.")
+                    st.stop()
 # Show the page content only if authenticated
     if st.session_state.authenticated == True:
         st.header('**Instructions for Adding Products**')
@@ -296,6 +297,8 @@ with tab1:
         5. Click **Submit** to save the data
         """)
     
+        selected_product = None
+        custom_product_name = None
     
         # Select a category
         category = st.selectbox(
@@ -403,6 +406,7 @@ with tab2:
                     st.rerun()
                 else:
                     st.error("Incorrect password. Try again.")
+                    st.stop()
                 
     
     # Show the page content only if authenticated
@@ -515,6 +519,7 @@ with tab3:
                     st.rerun()
                 else:
                     st.error("Incorrect password. Try again.")
+                    st.stop()
                 
     
     # Show the page content only if authenticated
@@ -615,7 +620,8 @@ with tab4:
                     st.rerun()
                 else:
                     st.error("Incorrect password. Try again.")
-    
+                    st.stop()
+
     # Show the page content only if authenticated
     if st.session_state.authenticated == True:
         st.header("Track Basement Inventory")
@@ -742,6 +748,7 @@ with tab5:
                     st.rerun()
                 else:
                     st.error("Incorrect password. Try again.")
+                    st.stop()
                 
     
     if st.session_state.authenticated == True:
@@ -865,6 +872,7 @@ with tab6:
                     st.rerun()
                 else:
                     st.error("Incorrect password. Try again.")
+                    st.stop()
 
 # Show the page content only if authenticated
     if st.session_state.authenticated == True:
