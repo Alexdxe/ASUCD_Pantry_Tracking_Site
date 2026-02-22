@@ -187,9 +187,9 @@ def text_card(text):
 st.title("Pantry Tracking Dashboard")
 
 # Tabs
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "Products Distributed", "Donations","Spoiled Foods", 
-    "Basement","Walk In Menu","Spreadsheets"])
+    "Basement", "Spreadsheets"])
 
 # Initialize session state for category, product, and quantity if not already set
 if 'category' not in st.session_state:
@@ -725,135 +725,8 @@ with tab4:
 
 
 
-
-
-
-# Tab 5: Walk In Menu
+# Tab 5: Data Spreadsheets Overview
 with tab5:
-    if "authenticated" not in st.session_state:
-        st.session_state.authenticated = False
-        
-    # Show login if not authenticated
-    if st.session_state.authenticated == False:
-        st.title("🔒 Restricted Access")
-    
-        # Login button
-        with st.form("login_form2"):
-            password_input = st.text_input("Enter Password:")
-            submit_button = st.form_submit_button("Login")  # Pressing Enter submits the form
-    
-            if submit_button:
-                if password_input == PASSWORD:
-                    st.session_state.authenticated = True
-                    st.rerun()
-                else:
-                    st.error("Incorrect password. Try again.")
-                    st.stop()
-                
-    
-    if st.session_state.authenticated == True:
-        st.header('Instructions Walk In Menu')
-        text_card("""
-        1. **Products Currently In Stock**: Products currently stocked will be shown here
-        2. **Remove Products That Are No Longer In Stock**: Clicking the "Remove" button
-        3. **Note**: After a product is removed it will no longer show on the Walk In Menu
-        """)
-
-        # Initialize session state variables
-        if "walk_in_menu" not in st.session_state:
-            st.session_state.walk_in_menu = []
-        if "removed_products_for_today" not in st.session_state:
-            st.session_state.removed_products_for_today = []
-        if "last_update_date" not in st.session_state:
-            st.session_state.last_update_date = None
-
-        # Function to reset removed products if it's a new day
-        def check_date_reset():
-            today = datetime.today().date()
-            if st.session_state.last_update_date is None or st.session_state.last_update_date != today:
-                st.session_state.removed_products_for_today = []  # Reset removed products
-                st.session_state.last_update_date = today  # Update date to today
-
-        # Load removed products from CSV
-        def load_removed_products():
-            if os.path.exists(removed_products_file):
-                try:
-                    removed_df = pd.read_csv(removed_products_file)
-                    removed_df['Date'] = pd.to_datetime(removed_df['Date']).dt.date
-                    st.session_state.removed_products_for_today = removed_df[removed_df['Date'] == datetime.today().date()]["Product"].tolist()
-                except Exception as e:
-                    st.error(f"Error loading removed products: {e}")
-                    st.session_state.removed_products_for_today = []
-
-        # Save removed products to CSV
-        def save_removed_products():
-            try:
-                removed_df = pd.DataFrame({
-                    "Product": st.session_state.removed_products_for_today,
-                    "Date": [datetime.today().date()] * len(st.session_state.removed_products_for_today)
-                })
-                removed_df.to_csv(removed_products_file, index=False)
-                print("removed_products.csv updated successfully.")
-            except Exception as e:
-                st.error(f"Error saving removed products: {e}")
-
-        # Load products and update walk-in menu
-        def load_products():
-            try:
-                df = pd.read_csv(csv_file)
-                if "Date" not in df.columns or "Product" not in df.columns:
-                    st.error("Error: 'Date' or 'Product' column missing from CSV.")
-                    return []
-
-                df["Date"] = pd.to_datetime(df["Date"], errors='coerce').dt.date
-                today = datetime.today().date()
-                today_products = df[df["Date"] == today]["Product"].dropna().unique().tolist()
-
-                # Filter out removed products
-                st.session_state.walk_in_menu = [
-                    product for product in today_products if product not in st.session_state.removed_products_for_today
-                ]
-
-                # Save updated walk-in menu
-                pd.DataFrame({"Product": st.session_state.walk_in_menu}).to_csv(walk_in_menu, index=False)
-                print("walk_in_menu.csv updated successfully with loaded products.")
-            except Exception as e:
-                st.error(f"Error loading CSV: {e}")
-                st.session_state.walk_in_menu = []
-
-        # Reset removed products and load data
-        check_date_reset()
-        load_removed_products()
-        load_products()
-
-
-        # Display walk-in menu
-        st.write("### Walk-In Menu:")
-        for product in st.session_state.walk_in_menu:
-            col1, col2 = st.columns([3, 1])
-            with col1:
-                st.write(f"- **{product}**")
-            with col2:
-                button_key = f"remove_{product}"
-                if st.button(f"REMOVE {product}", key=button_key):
-                    st.session_state.removed_products_for_today.append(product)
-                    load_products()  # Reload updated products
-                    save_removed_products()  # Save removed products
-                    st.success(f"Product '{product}' removed from walk-in menu.")
-
-        st.write("### All Products From Today", st.session_state.walk_in_menu)
-        st.write("### Products That Are No Longer In Stock", st.session_state.removed_products_for_today)
-
-
-
-
-
-
-
-
-
-# Tab 6: Data Spreadsheets Overview
-with tab6:
     if "authenticated" not in st.session_state:
         st.session_state.authenticated = False
         
@@ -878,7 +751,7 @@ with tab6:
     if st.session_state.authenticated == True:
         st.header("Data Spreadsheet Overview")
 
-        files = {"Walk In Menu": walk_in_menu, "Products Distributed": csv_file, "Donated Products": donated_file, "Spoiled Foods": spoiled_file, "Basement": inventory_file}
+        files = {"Products Distributed": csv_file, "Donated Products": donated_file, "Spoiled Foods": spoiled_file, "Basement": inventory_file}
 
         for name, file_path in files.items():
             st.subheader(name)
