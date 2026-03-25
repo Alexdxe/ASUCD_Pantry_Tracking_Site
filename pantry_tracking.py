@@ -13,6 +13,8 @@ menstrual_file = os.path.join(current_directory, "menstrual_products.csv")
 donated_file = os.path.join(current_directory, "donated_products.csv")  
 spoiled_file = os.path.join(current_directory, "spoiled_food.csv")  
 inventory_file = os.path.join(current_directory, "basement_inventory.csv")
+shirt_form_file = os.path.join(current_directory, "tshirt_form_data.csv")
+fridge_file = os.path.join(current_directory, "fridge_temperatures.csv")
 PASSWORD = "pantry"
 
 
@@ -187,9 +189,9 @@ def text_card(text):
 st.title("Pantry Tracking Dashboard")
 
 # Tabs
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
     "Products Distributed", "Donations","Spoiled Foods", 
-    "Basement", "Spreadsheets"])
+    "Basement", "T-Shirt Form", "Fridge Temps", "Spreadsheets"])
 
 # Initialize session state for category, product, and quantity if not already set
 if 'category' not in st.session_state:
@@ -396,7 +398,7 @@ with tab2:
         st.title("🔒 Restricted Access")
     
         # Login button
-        with st.form("login_form3"):
+        with st.form("login_form2"):
             password_input = st.text_input("Enter Password:")
             submit_button = st.form_submit_button("Login")  # Pressing Enter submits the form
     
@@ -462,6 +464,7 @@ with tab2:
         new_entry = {
             "Date": date.strftime("%Y-%m-%d"),
             "Donation Provider": donation_provider,
+            "Other Donor Details": donor_details,
             "Contents": ", ".join(donation_contents),
             "Other Contents Details": other_contents_details,
             "Donation Weight (lbs)": donation_weight,
@@ -478,8 +481,8 @@ with tab2:
                     donated_data = pd.read_csv(donated_file)
                 except FileNotFoundError:
                     donated_data = pd.DataFrame(columns=[
-                        "Date", "Donation Provider", "Donation Weight (lbs)", "Contents", "Other Contents Details", 
-                        "Donor Details", "Additional Notes"
+                        "Date", "Donation Provider","Other Donor Details", "Donation Weight (lbs)", "Contents", "Other Contents Details", 
+                         "Additional Notes"
                     ])
     
                 donated_data = pd.concat([donated_data, pd.DataFrame([new_entry])], ignore_index=True)
@@ -509,7 +512,7 @@ with tab3:
         st.title("🔒 Restricted Access")
     
         # Login button
-        with st.form("login_form4"):
+        with st.form("login_form3"):
             password_input = st.text_input("Enter Password:")
             submit_button = st.form_submit_button("Login")  # Pressing Enter submits the form
     
@@ -610,7 +613,7 @@ with tab4:
         st.title("🔒 Restricted Access")
     
         # Login button
-        with st.form("login_form6"):
+        with st.form("login_form4"):
             password_input = st.text_input("Enter Password:")
             submit_button = st.form_submit_button("Login")  # Pressing Enter submits the form
     
@@ -634,7 +637,7 @@ with tab4:
         5. **🔴IMPORTANT**: Mark inventory taken one rack at a time.
         6. **📜Legend**: S: Small, M: Medium, L: Large, XL: Extra Large, FR: For Food Recovery Only.
         """)
-        with st.expander("Click to view map"):
+        with st.expander("**Click to view map**"):
             st.image("basement.png", use_container_width=True)
                 
 
@@ -650,7 +653,7 @@ with tab4:
                        "Lifestyle Latex Condoms", "Lifestyle Non Latex Condoms", "Latex dental dams", "Silicon lube(L)", "SKYN Non Latex Condoms", "Other"],
 
             "Rack 2": ["Clearblue Rapid Detection Pregnancy Test", "My Way Emergancy Contraceptive", "Loradamed (Allergry medicine)", 
-                       "Antacid", "Asprin", "Iburprofen", "Bandages", "Triple Antibiotic Ointment","Tide Pods", "Plastic foodservice film", "Spice Jar Bottle", "Pantry tote bags", "Other"],
+                       "Antacid", "Asprin", "Iburprofen", "Bandages", "Triple Antibiotic Ointment","Tide Pods", "Plastic foodservice film", "Spice Jar Bottle", "Pantry tote bags", "Gallon Ziploc Bags", "Other"],
 
             "Rack 3": ["Empty Spray Bottle", "1 Gallon Floor Cleaner", "BioTuf Compostable Liner", "Small Trash Bag", 
                        "Sani Multi-Surface Wipes", "Clorax Multi-Surface Spray", "Fix Smith Shop Towel", "Swiffer Wet Jet Pad", 
@@ -723,10 +726,144 @@ with tab4:
                 st.warning("Please fill out all required fields.")
 
 
-
-
-# Tab 5: Data Spreadsheets Overview
+# Tab 5: T-Shirt Form:
 with tab5:
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
+
+    # Show login if not authenticated
+    if st.session_state.authenticated == False:
+        st.title("🔒 Restricted Access")
+
+        # Login button
+        with st.form("login_form5"):
+            password_input = st.text_input("Enter Password:")
+            submit_button = st.form_submit_button("Login")  # Pressing Enter submits the form
+
+            if submit_button:
+                if password_input == PASSWORD:
+                    st.session_state.authenticated = True
+                    st.rerun()
+                else:
+                    st.error("Incorrect password. Try again.")
+                    st.stop()
+    # Show the page content only if authenticated
+    if st.session_state.authenticated == True:
+        st.header("T-Shirt Form")
+        text_card("""
+        1. **Date of Form Submission**
+        2. **First and Last Name**
+        3. **Size of T-shirt**
+        """)
+        t_date = st.date_input("Date of Form Submission", value=datetime.now().date(), key="tshirt_date")
+        name = st.text_input("First and Last Name", key="tshirt_name")
+        size = st.selectbox("Size of T-shirt", options=["XS", "S", "M", "L", "XL", "2XL", "3XL"], key="tshirt_size")
+        submit_tshirt = st.button("Submit T-Shirt Form")
+
+        if submit_tshirt:
+            if t_date and name and size:
+                try:
+                    tshirt_data = pd.read_csv("tshirt_form_data.csv")
+                except FileNotFoundError:
+                    tshirt_data = pd.DataFrame(columns=["Date of Submission", "Name", "Size"])
+
+                new_entry = {
+                    "Date of Submission": t_date.strftime("%Y-%m-%d"),
+                    "Name": name,
+                    "Size": size
+                }
+
+                tshirt_data = pd.concat([tshirt_data, pd.DataFrame([new_entry])], ignore_index=True)
+                tshirt_data.to_csv("tshirt_form_data.csv", index=False)
+
+                st.success(f"T-Shirt form submitted successfully!🎉", icon="✅")
+            else:
+                st.warning("Please fill out all required fields.")
+
+
+
+
+# Tab 6: Fridge Temperatures
+with tab6:
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
+    # Show login if not authenticated
+    if st.session_state.authenticated == False:
+        st.title("🔒 Restricted Access")
+        # Login button
+        with st.form("login_form6"):
+            password_input = st.text_input("Enter Password:")
+            submit_button = st.form_submit_button("Login")  # Pressing Enter submits the form
+
+            if submit_button:
+                if password_input == PASSWORD:
+                    st.session_state.authenticated = True
+                    st.rerun()
+                else:
+                    st.error("Incorrect password. Try again.")
+                    st.stop()
+
+
+    # Show the page content only if authenticated
+    if st.session_state.authenticated == True:
+        st.header("Fridge Temperatures")
+        text_card("""
+        **🔴IMPORTANT** Temps are taken at 9 AM, 12 PM, 3 PM and 6 PM every day. Please input the temperatures at these times and make sure to fill out all fields!
+        1. **Date and Time of Temperature Check**
+        2. **Temperature Reading of Fridge 1 (in °F)**
+        3. **Temperature Reading of Fridge 2**
+        4. **Temperature Reading of Freezer 3**
+        5. **Temperature Reading of Fridge 4**
+        6. **Temperature Reading of Fridge 5**
+        7. **Temperature Reading of Freezer 6**         
+        8. **Initials of Person Checking Temperatures**
+            """)
+
+        with st.expander("**Click to view map**"):
+            st.image("fridge.png", use_container_width=True)
+
+        date_time = st.datetime_input("Date and Time of Temperature Check", value=datetime.now(), key="temp_check_datetime")
+        fridge1_temp = st.number_input("Temperature Reading of Fridge 1 (°F)", key="fridge1_temp")
+        fridge2_temp = st.number_input("Temperature Reading of Fridge 2 (°F)", key="fridge2_temp")
+        freezer3_temp = st.number_input("Temperature Reading of Freezer 3 (°F)", key="freezer3_temp")
+        fridge4_temp = st.number_input("Temperature Reading of Fridge 4 (°F)", key="fridge4_temp")
+        fridge5_temp = st.number_input("Temperature Reading of Fridge 5 (°F)", key="fridge5_temp")
+        freezer6_temp = st.number_input("Temperature Reading of Freezer 6 (°F)", key="freezer6_temp")
+        initials = st.text_input("Initials of Person Checking Temperatures", key="temp_check_initials")
+        submit_temps = st.button("Submit Temperature Readings")
+
+        if submit_temps:
+            if date_time and initials:
+                try:
+                    temp_data = pd.read_csv("fridge_temperatures.csv")
+                except FileNotFoundError:
+                    temp_data = pd.DataFrame(columns=[
+                        "Date and Time", "Fridge 1 (°F)", "Fridge 2 (°F)", "Freezer 3 (°F)", 
+                        "Fridge 4 (°F)", "Fridge 5 (°F)", "Freezer 6 (°F)", "Initials"
+                    ])
+
+                new_entry = {
+                    "Date and Time": date_time.strftime("%Y-%m-%d %H:%M:%S"),
+                    "Fridge 1 (°F)": fridge1_temp,
+                    "Fridge 2 (°F)": fridge2_temp,
+                    "Freezer 3 (°F)": freezer3_temp,
+                    "Fridge 4 (°F)": fridge4_temp,
+                    "Fridge 5 (°F)": fridge5_temp,
+                    "Freezer 6 (°F)": freezer6_temp,
+                    "Initials": initials
+                }
+
+                temp_data = pd.concat([temp_data, pd.DataFrame([new_entry])], ignore_index=True)
+                temp_data.to_csv("fridge_temperatures.csv", index=False)
+
+                st.success(f"Temperature readings submitted successfully!🎉", icon="✅")
+            else:
+                st.warning("Please fill out all required fields.")
+
+
+
+# Tab 7: Data Spreadsheets Overview
+with tab7:
     if "authenticated" not in st.session_state:
         st.session_state.authenticated = False
         
@@ -735,7 +872,7 @@ with tab5:
         st.title("🔒 Restricted Access")
     
         # Login button
-        with st.form("login_form5"):
+        with st.form("login_form7"):
             password_input = st.text_input("Enter Password:")
             submit_button = st.form_submit_button("Login")  # Pressing Enter submits the form
     
@@ -751,7 +888,7 @@ with tab5:
     if st.session_state.authenticated == True:
         st.header("Data Spreadsheet Overview")
 
-        files = {"Products Distributed": csv_file, "Donated Products": donated_file, "Spoiled Foods": spoiled_file, "Basement": inventory_file}
+        files = {"Products Distributed": csv_file, "Donated Products": donated_file, "Spoiled Foods": spoiled_file, "Basement": inventory_file, "T-Shirt Form": "tshirt_form_data.csv", "Fridge Temperatures": "fridge_temperatures.csv"}
 
         for name, file_path in files.items():
             st.subheader(name)
