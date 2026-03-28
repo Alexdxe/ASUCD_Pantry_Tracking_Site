@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 from fractions import Fraction
 import os
 import time
@@ -821,8 +821,10 @@ with tab6:
 
         with st.expander("**Click to view map**"):
             st.image("fridge.png", use_container_width=True)
+        
+        local_now = datetime.now() - timedelta(hours=7)
 
-        date_time = st.datetime_input("Date and Time of Temperature Check", value=datetime.now(), key="temp_check_datetime")
+        date_time = st.datetime_input("Date and Time of Temperature Check", value=local_now, key="temp_check_datetime")
         fridge1_temp = st.number_input("Temperature Reading of Fridge 1 (°F)", key="fridge1_temp")
         fridge2_temp = st.number_input("Temperature Reading of Fridge 2 (°F)", key="fridge2_temp")
         freezer3_temp = st.number_input("Temperature Reading of Freezer 3 (°F)", key="freezer3_temp")
