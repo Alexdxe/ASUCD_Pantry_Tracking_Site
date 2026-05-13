@@ -649,38 +649,148 @@ with tab4:
             "Select Rack Number",[f"Rack {i}" for i in range(1,14)],)
 
         options = {
-            "Rack 1": ["Silicon Lube","Water based Lube", "Warer + latex Hybride lube", "Kimono Maxx", "Kimono Microthin", 
-                       "Lifestyle Latex Condoms", "Lifestyle Non Latex Condoms", "Latex dental dams", "Silicon lube(L)", "SKYN Non Latex Condoms", "Other"],
+    "Rack 1": [
+        "Kimono Maxx",
+        "Kimono Microthin",
+        "Latex Dental Dams",
+        "Lifestyle Latex Condoms",
+        "Lifestyle Liquid Lubricant",
+        "Lifestyle Non-Latex Condoms",
+        "Silicone Lube",
+        "Silicone Lube (L)",
+        "SKYN Non-Latex Condoms",
+        "Water Based Lube",
+        "Water + Latex Hybrid Lube",
+        "Other"
+    ],
 
-            "Rack 2": ["Clearblue Rapid Detection Pregnancy Test", "My Way Emergancy Contraceptive", "Loradamed (Allergry medicine)", 
-                       "Antacid", "Asprin", "Iburprofen", "Bandages", "Triple Antibiotic Ointment","Tide Pods", "Plastic foodservice film", "Spice Jar Bottle", "Pantry tote bags", "Gallon Ziploc Bags", "Other"],
+    "Rack 2": [
+        "Antacid",
+        "Aspirin",
+        "Bandages",
+        "Clearblue Rapid Detection Pregnancy Test",
+        "Gallon Ziploc Bags",
+        "Healcheck Pregnancy Test",
+        "Ibuprofen",
+        "Levonorgestrel Tablet (L)",
+        "Loradamed (Allergy Medicine)",
+        "My Way Emergency Contraceptive",
+        "Tide Pods",
+        "Triple Antibiotic Ointment",
+        "🛑(IM) Pantry Tote Bags",
+        "🛑(IM) Spice Jar Bottle",
+        "Other"
+    ],
 
-            "Rack 3": ["Empty Spray Bottle", "1 Gallon Floor Cleaner", "BioTuf Compostable Liner", "Small Trash Bag", 
-                       "Sani Multi-Surface Wipes", "Clorax Multi-Surface Spray", "Fix Smith Shop Towel", "Swiffer Wet Jet Pad", 
-                       "Miscellaneous Cleaning Supply (found on bottom on shelf)", "Spice Jar Caps", "Spice Jar Bottle", "Tide pods", "Trash bags", "Other"],
+    "Rack 3": [
+        "1 Gallon Floor Cleaner",
+        "56 Gallon Trash Bags",
+        "BioTuf Compostable Liners",
+        "Clorox Multi-Surface Spray",
+        "Empty Spray Bottle",
+        "Fixsmith Shop Towels",
+        "Sani Multi-Surface Wipes",
+        "Swiffer WetJet Pads",
+        "Tide Pods",
+        "Trash Bags",
+        "🛑(IM) Miscellaneous Cleaning Supplies (Bottom Shelf)",
+        "Other"
+    ],
 
-            "Rack 4": ["S Black Nitrile Gloves", "M Black Nitrile Gloves", "L Black Nitrile Gloves", "XL Black Nitrile Gloves",
-                       "🛑(FR) 24 oz Soup Container", "🛑(FR) 24 oz Soup Container Lid", "🛑(FR) raft Food Container", "🛑(FR) 32oz Take out containers (on floor)", "Other"],
+    "Rack 4": [
+        "L Black Nitrile Gloves",
+        "M Black Nitrile Gloves",
+        "S Black Nitrile Gloves",
+        "XL Black Nitrile Gloves",
+        "🛑(FR) 12-32 oz Paper Lids",
+        "🛑(FR) 16-32 oz Takeout Container Lids",
+        "🛑(FR) 18 oz Cups (On Floor)",
+        "🛑(FR) 24 oz Soup Containers",
+        "🛑(FR) Kraft Food Containers",
+        "Other"
+    ],
 
-            "Rack 5": ["AF Mentural Pads", "Kotex Ultra Thin Pads", "Aunt Flow vended Tampon", "Fresh Scent Bar soap", "Other"],
+    "Rack 5": [
+        "AF Menstrual Pads",
+        "Aunt Flow Vented Tampons",
+        "Brushless Shaving Cream",
+        "Fresh Scent Bar Soap",
+        "Kotex Ultra Thin Pads",
+        "Shaving Kit",
+        "Tampax Tampons",
+        "Other"
+    ],
 
-            "Rack 6": ["Stick Deodorant(L)","Stick Deodorant(S)", "Twin Blade Blue Razor","Biocorn Conditioner","Dove Body wash","Biocorn Body wash",
-                       "Biocorn Shampoo","Biocorn Shaving kit","Biocorn Vanity Kit","Dove Conditioner","Dove Shampoo","Biocorn Body Lotion","Handle Comb","Petroleum Jelly", "Other"],
+    "Rack 6": [
+        "Biocorn Body Wash",
+        "Biocorn Conditioner",
+        "Biocorn Shaving Kit",
+        "Biocorn Vanity Kit",
+        "Dove Body Wash",
+        "Dove Conditioner",
+        "Dove Shampoo",
+        "Handle Comb",
+        "Kotex Ultra Thin Pads",
+        "Paper Shopping Bags",
+        "Petroleum Jelly",
+        "Stick Deodorant (L)",
+        "Stick Deodorant (S)",
+        "Twin Blade Blue Razors",
+        "Other"
+    ],
 
-            "Rack 7": ["FreshMint fluoride toothpaste","Kotex Ultra Thin Pads(L)' EDEN Vanity Kit","DawnMist Combs","Freshmint toothbrushes", "Bicorn BodyWash", "Kotex Ultra Thin Pads(S)", "Banana Sport SPF 30 sunscreen","Purell hand sanitizer", "Other"],
+    "Rack 7": [
+        "FreshMint Fluoride Toothpaste",
+        "Kotex Ultra Thin Pads",
+        "Purell Advanced Hand Sanitizer",
+        "RAZ2 Twin Blade Blue Razors",
+        "Other"
+    ],
 
-            "Rack 8": ["Aunt Flow Mentural Pads (also found in rack 5)", "Bathroom Tissue ","Tampax Regular", "Bicorn conditioner", "Other"],
+    "Rack 8": [
+        "Bagged Order Paper Bags",
+        "Biocorn Dental Kit",
+        "Listerine Fresh Burst",
+        "Metal Utensil Bags",
+        "Novo Amenity Toiletries Kit",
+        "Other"
+    ],
 
-            "Rack 9": ["Bagged order paper bags","Baggute bags", "Other"],
+    "Rack 9": [
+        "Bagged Order Bags",
+        "Paper Shopping Bags",
+        "Rose Tote Bags",
+        "Other"
+    ],
 
-            "Rack 10": ["Other"],
-            
-            "Rack 11": ["Extra shelving", "Broken Microwave", "Small TV", "Other"],
+    "Rack 10": [
+        "Other"
+    ],
 
-            "Rack 12": ["Baguette bags", "Small paper bags", "Printer paper", "Egg cartons", "Other"],
+    "Rack 11": [
+        "Broken Microwave",
+        "Extra Shelving",
+        "Small TV",
+        "Other"
+    ],
 
-            "Rack 13": ["Old physical Inventory invoices", "HDX Respirator", "Code Safe", "Umbrella weights", "Blue crates", "Other"]
-        }
+    "Rack 12": [
+        "Baguette Bags",
+        "Printer Paper",
+        "Small Paper Bags",
+        "Other"
+    ],
+
+    "Rack 13": [
+        "Basket Stand",
+        "Blue Crates",
+        "Code Safe",
+        "HDX Respirator",
+        "Old Physical Inventory Invoices",
+        "Umbrella Weights",
+        "Other"
+    ]
+}
 
 
         # Contents (multi-select)
@@ -825,17 +935,17 @@ with tab6:
         local_now = datetime.now() - timedelta(hours=7)
 
         date_time = st.datetime_input("Date and Time of Temperature Check", value=local_now, key="temp_check_datetime")
-        fridge1_temp = st.number_input("Temperature Reading of Fridge 1 (°F)", key="fridge1_temp")
-        fridge2_temp = st.number_input("Temperature Reading of Fridge 2 (°F)", key="fridge2_temp")
-        freezer3_temp = st.number_input("Temperature Reading of Freezer 3 (°F)", key="freezer3_temp")
-        fridge4_temp = st.number_input("Temperature Reading of Fridge 4 (°F)", key="fridge4_temp")
-        fridge5_temp = st.number_input("Temperature Reading of Fridge 5 (°F)", key="fridge5_temp")
-        freezer6_temp = st.number_input("Temperature Reading of Freezer 6 (°F)", key="freezer6_temp")
+        fridge1_temp = st.text_input("Temperature Reading of Fridge 1 (°F)", key="fridge1_temp")
+        fridge2_temp = st.text_input("Temperature Reading of Fridge 2 (°F)", key="fridge2_temp")
+        freezer3_temp = st.text_input("Temperature Reading of Freezer 3 (°F)", key="freezer3_temp")
+        fridge4_temp = st.text_input("Temperature Reading of Fridge 4 (°F)", key="fridge4_temp")
+        fridge5_temp = st.text_input("Temperature Reading of Fridge 5 (°F)", key="fridge5_temp")
+        freezer6_temp = st.text_input("Temperature Reading of Freezer 6 (°F)", key="freezer6_temp")
         initials = st.text_input("Initials of Person Checking Temperatures", key="temp_check_initials")
         submit_temps = st.button("Submit Temperature Readings")
 
         if submit_temps:
-            if date_time and initials:
+            if date_time and fridge1_temp and fridge2_temp and freezer3_temp and fridge4_temp and fridge5_temp and freezer6_temp and initials:
                 try:
                     temp_data = pd.read_csv("fridge_temperatures.csv")
                 except FileNotFoundError:
