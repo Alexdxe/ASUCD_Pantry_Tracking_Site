@@ -452,9 +452,8 @@ with tab5:
     if st.session_state.authenticated == True:
         st.header("T-Shirt Form")
         text_card("""
-        1. **Date of Form Submission**
-        2. **First and Last Name**
-        3. **Size of T-shirt**
+        1. **First and Last Name**
+        2. **Size of T-shirt**
         """)
 
         embed_google_form("https://forms.gle/6tDE3yY2mRhb8pfb7")
@@ -488,14 +487,13 @@ with tab6:
         st.header("Fridge Temperatures")
         text_card("""
         **🔴IMPORTANT** Temps are taken at 9 AM, 12 PM, 2 PM and 4 PM every day. Please input the temperatures at these times and make sure to fill out all fields!
-        1. **Date and Time of Temperature Check**
-        2. **Temperature Reading of Fridge 1 (in °F)**
-        3. **Temperature Reading of Fridge 2**
-        4. **Temperature Reading of Freezer 3**
-        5. **Temperature Reading of Fridge 4**
-        6. **Temperature Reading of Fridge 5**
-        7. **Temperature Reading of Freezer 6**         
-        8. **Initials of Person Checking Temperatures**
+        1. **Temperature Reading of Fridge 1 (in °F)**
+        2. **Temperature Reading of Fridge 2**
+        3. **Temperature Reading of Freezer 3**
+        4. **Temperature Reading of Fridge 4**
+        5. **Temperature Reading of Fridge 5**
+        6. **Temperature Reading of Freezer 6**         
+        7. **Initials of Person Checking Temperatures**
             """)
         with st.expander("**Click to view map**"):
                     st.image("fridge.png", use_container_width=True)
