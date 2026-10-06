@@ -497,5 +497,7 @@ with tab6:
         7. **Temperature Reading of Freezer 6**         
         8. **Initials of Person Checking Temperatures**
             """)
+        with st.expander("**Click to view map**"):
+                    st.image("fridge.png", use_container_width=True)
 
         embed_google_form("https://forms.gle/46WVepP1sA5DdvUT9")
